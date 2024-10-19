@@ -2,6 +2,7 @@
   import {NLayout, NGrid, NGi} from 'naive-ui'
 
   import FilterForm from '@/components/FilterForm.vue'
+  import Catalog from '@/components/Catalog.vue'
 </script>
 
 <template>
@@ -11,7 +12,7 @@
         <FilterForm />
       </n-gi>
       <n-gi span="3">
-        Content
+        <Catalog />
       </n-gi>
     </n-grid>
   </n-layout>
