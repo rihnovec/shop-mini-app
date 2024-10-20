@@ -19,7 +19,15 @@ const cartStore = useCartStore()
 const {quantity, items} = storeToRefs(cartStore)
 const {clearCart} = cartStore
 
-const totalSum = computed(() => items.value.reduce((sum, product) => sum + product.price * product.quantity, 0))
+const tableItems = computed(() => {
+  return items.value.map((product, index) => ({
+    ...product,
+    index: index + 1,
+    totalPrice: product.price * product.quantity
+  }))
+})
+
+const totalSum = computed(() => tableItems.value.reduce((sum, product) => sum + product.totalPrice, 0).toFixed(2))
 
 const columns = ref([
   {
@@ -35,12 +43,12 @@ const columns = ref([
     key: 'quantity'
   },
   {
-    title: 'Цена за ед.',
+    title: 'Цена за ед. $',
     key: 'price'
   },
   {
-    title: 'Итого',
-    key: 'priceTotal'
+    title: 'Итого $',
+    key: 'totalPrice'
   },
 ])
 
@@ -62,7 +70,7 @@ function closeOrderMessage() {
 <template>
   <n-h1>Товары в корзине</n-h1>
   <n-space vertical size="large">
-    <n-data-table :columns="columns" :data="items" />
+    <n-data-table :columns="columns" :data="tableItems" />
     <n-flex align="center" justify="space-between">
       <n-el class="order-total-text">Всего товаров {{quantity}} на сумму ${{totalSum}}</n-el>
       <n-button type="primary" attr-type="button" @click="createOrder">Оформить заказ</n-button>
