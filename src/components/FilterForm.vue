@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed, onMounted} from 'vue'
+import {ref, computed, onMounted, watch} from 'vue'
 import {storeToRefs} from 'pinia'
 import {useCatalogStore} from '@/stores/catalog-store/index.js'
 
@@ -10,7 +10,7 @@ import {
   NLayoutContent,
   NCard,
   NSelect,
-  NInputNumber,
+  NInput,
   NButton,
   NSpace,
   NEl
@@ -19,6 +19,14 @@ import {
 const catalogStore = useCatalogStore()
 const {categories, selectedCategoryValue, priceRange} = storeToRefs(catalogStore)
 const {fetchCategories, resetFilter, applyFilter} = catalogStore
+
+const minPriceValue = ref(priceRange.value.min)
+const maxPriceValue = ref(priceRange.value.max)
+
+watch(priceRange, range => {
+  minPriceValue.value = range.min
+  maxPriceValue.value = range.max
+})
 
 const options = computed(() => {
   const categoriesOptions = categories.value.map(category => {
@@ -42,6 +50,18 @@ function changeCategory(value) {
   selectedCategoryValue.value = value
 }
 
+function allowInputCheck(value) {
+  return !value || /^\d+$/.test(value)
+}
+
+function onInputMin(value) {
+  minPriceValue.value = value
+}
+
+function onInputMax(value) {
+  maxPriceValue.value = value
+}
+
 onMounted(() => {
   fetchCategories()
 })
@@ -62,22 +82,24 @@ onMounted(() => {
             <n-gi>
               <n-space vertical>
                 <n-el class="control-title">Мин. цена $</n-el>
-                <n-input-number
-                  v-model:value="priceRange.min"
-                  placeholder="Min"
-                  :min="0"
-                  :max="10000" :show-button="false"
+                <n-input
+                  :value="minPriceValue"
+                  :allow-input="allowInputCheck"
+                  placeholder="Мин. цена"
+                  inputmode="number"
+                  :on-update:value="onInputMin"
                 />
               </n-space>
             </n-gi>
             <n-gi>
               <n-space vertical>
                 <n-el class="control-title">Макс. цена $</n-el>
-                <n-input-number
-                  v-model:value="priceRange.max"
-                  placeholder="Max"
-                  :min="0"
-                  :max="10000" :show-button="false"
+                <n-input
+                  :value="maxPriceValue"
+                  :allow-input="allowInputCheck"
+                  placeholder="Макс. цена"
+                  inputmode="number"
+                  :on-update:value="onInputMax"
                 />
               </n-space>
             </n-gi>
