@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, h} from 'vue'
 import {storeToRefs} from 'pinia'
 import {useCartStore} from '@/stores/cart-store/index.js'
 import {useRouter} from 'vue-router'
@@ -14,6 +14,8 @@ import {
   NSpace,
   NFlex
 } from 'naive-ui'
+import OrderProductQuantity from '@/components/OrderProductQuantity.vue'
+import OrderProduct from '@/components/OrderProduct.vue'
 
 const cartStore = useCartStore()
 const {quantity, items} = storeToRefs(cartStore)
@@ -36,11 +38,13 @@ const columns = ref([
   },
   {
     title: 'Наименование товара',
-    key: 'title'
+    key: 'title',
+    render: (row) => h(OrderProduct, row)
   },
   {
     title: 'Количество',
-    key: 'quantity'
+    key: 'quantity',
+    render: (row) => h(OrderProductQuantity, row)
   },
   {
     title: 'Цена за ед. $',

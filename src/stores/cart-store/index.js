@@ -21,5 +21,13 @@ export const useCartStore = defineStore('cartStore', () => {
     items.value = []
   }
 
-  return {items, quantity, inCart, addToCart, removeFromCart, clearCart}
+  function changeQuantity({productId, quantity}) {
+    const product = items.value.find(product => product.id === productId)
+
+    if (product) {
+      product.quantity = quantity
+    }
+  }
+
+  return {items, quantity, inCart, addToCart, removeFromCart, clearCart, changeQuantity}
 })
