@@ -1,8 +1,11 @@
 <script setup>
-  import {NLayout, NGrid, NGi} from 'naive-ui'
+import {NLayout, NGrid, NGi} from 'naive-ui'
+import FilterForm from '@/components/FilterForm.vue'
+import Catalog from '@/components/Catalog.vue'
+import {useAuth} from '@/composables/auth.js'
 
-  import FilterForm from '@/components/FilterForm.vue'
-  import Catalog from '@/components/Catalog.vue'
+const {redirectByAuthStatus} = useAuth()
+redirectByAuthStatus()
 </script>
 
 <template>

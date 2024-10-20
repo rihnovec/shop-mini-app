@@ -1,18 +1,21 @@
 <script setup>
   import {
     NLayoutHeader,
-    NLayoutContent
+    NLayoutContent,
+    NFlex
   } from 'naive-ui'
 
-  import {RouterLink} from 'vue-router'
+  import HeaderLogo from '@/components/HeaderLogo.vue'
+  import HeaderCart from '@/components/HeaderCart.vue'
 </script>
 
 <template>
   <n-layout-header bordered>
     <n-layout-content content-style="padding: 14px 24px;">
-      <RouterLink to="/" class="header-logo">
-        <img alt="Shop Mini App" width="32" src="/src/assets/logo.svg" />
-      </RouterLink>
+      <n-flex justify="space-between">
+        <HeaderLogo />
+        <HeaderCart />
+      </n-flex>
     </n-layout-content>
   </n-layout-header>
 </template>

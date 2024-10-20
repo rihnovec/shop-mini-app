@@ -1,5 +1,7 @@
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, onMounted} from 'vue'
+import {storeToRefs} from 'pinia'
+import {useCatalogStore} from '@/stores/catalog-store/index.js'
 
 import {
   NGrid,
@@ -14,32 +16,35 @@ import {
   NEl
 } from 'naive-ui'
 
-const selectedCategory = ref('')
-const options = ref([
-  {
-    label: 'Категория 1',
-    value: 'category1'
-  },
-  {
-    label: 'Категория 2',
-    value: 'category2'
-  },
-  {
-    label: 'Категория 3',
-    value: 'category3'
-  },
-  {
-    label: 'Категория 4',
-    value: 'category4'
-  },
-])
+const catalogStore = useCatalogStore()
+const {categories, selectedCategoryValue, priceRange} = storeToRefs(catalogStore)
+const {fetchCategories, resetFilter, applyFilter} = catalogStore
 
-const price = ref({
-  min: 0,
-  max: 10000
+const options = computed(() => {
+  const categoriesOptions = categories.value.map(category => {
+    return {
+      label: category.slice(0, 1).toUpperCase() + category.slice(1),
+      value: category
+    }
+  })
+
+  return [
+    {
+      label: 'Все категории',
+      value: 'all'
+    },
+    ...categoriesOptions
+  ]
 })
+const hasOptions = computed(() => categories.value.length > 0)
 
-const hasOptions = computed(() => options.value.length > 0)
+function changeCategory(value) {
+  selectedCategoryValue.value = value
+}
+
+onMounted(() => {
+  fetchCategories()
+})
 </script>
 
 <template>
@@ -48,7 +53,7 @@ const hasOptions = computed(() => options.value.length > 0)
       <n-card title="Фильтр" :bordered="false" content-style="padding: 14px 0;" header-style="padding: 0">
         <n-space vertical>
           <n-el class="control-title">Выберите категорию</n-el>
-          <n-select v-model="selectedCategory" default-value="Не выбрано" :disabled="!hasOptions" :options="options" />
+          <n-select :value="selectedCategoryValue" :disabled="!hasOptions" :options="options" @update-value="changeCategory" />
         </n-space>
       </n-card>
       <n-card title="Цена" :bordered="false" content-style="padding: 14px 0;" header-style="padding: 0">
@@ -56,9 +61,9 @@ const hasOptions = computed(() => options.value.length > 0)
           <n-grid x-gap="14" :cols="2">
             <n-gi>
               <n-space vertical>
-                <n-el class="control-title">Мин. цена</n-el>
+                <n-el class="control-title">Мин. цена $</n-el>
                 <n-input-number
-                  v-model:value="price.min"
+                  v-model:value="priceRange.min"
                   placeholder="Min"
                   :min="0"
                   :max="10000" :show-button="false"
@@ -67,9 +72,9 @@ const hasOptions = computed(() => options.value.length > 0)
             </n-gi>
             <n-gi>
               <n-space vertical>
-                <n-el class="control-title">Макс. цена</n-el>
+                <n-el class="control-title">Макс. цена $</n-el>
                 <n-input-number
-                  v-model:value="price.max"
+                  v-model:value="priceRange.max"
                   placeholder="Max"
                   :min="0"
                   :max="10000" :show-button="false"
@@ -81,10 +86,10 @@ const hasOptions = computed(() => options.value.length > 0)
       </n-card>
       <n-layout-content>
         <n-space vertical>
-          <n-button strong secondary block>
+          <n-button strong secondary block @click="resetFilter">
             Сброс
           </n-button>
-          <n-button type="primary" block>
+          <n-button type="primary" block @click="applyFilter">
             Применить
           </n-button>
         </n-space>
