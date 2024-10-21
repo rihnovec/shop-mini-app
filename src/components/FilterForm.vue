@@ -51,7 +51,7 @@ function changeCategory(value) {
 }
 
 function allowInputCheck(value) {
-  return !value || /^\d+$/.test(value)
+  return value.length === 0 || !Number.isNaN(+value)
 }
 
 function onInputMin(value) {
