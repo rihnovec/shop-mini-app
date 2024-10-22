@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NLayout, NGrid, NGi } from 'naive-ui'
-// import FilterForm from '../components/FilterForm.vue'
+import FilterForm from '../components/FilterForm.vue'
 import Catalog from '../components/Catalog.vue'
 import { useAuth } from '../composables/auth'
 
@@ -12,7 +12,7 @@ redirectByAuthStatus()
   <n-layout>
     <n-grid cols="1 m:4" x-gap="12" responsive="screen">
       <n-gi>
-        <!-- <FilterForm /> -->
+        <FilterForm />
       </n-gi>
       <n-gi span="3">
         <Catalog />

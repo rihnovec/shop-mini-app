@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useCatalogStore } from '../stores/catalog-store/index.ts'
+import { useCatalogStore } from '../stores/catalog-store/index'
 
 import {
   NLayoutContent,
@@ -13,7 +13,7 @@ import {
   NResult,
   NButton,
 } from 'naive-ui'
-// import CatalogCard from './CatalogCard.vue'
+import CatalogCard from './CatalogCard.vue'
 
 const catalogStore = useCatalogStore()
 const { items, catalogTitle } = storeToRefs(catalogStore)
@@ -22,10 +22,10 @@ const { fetchProducts, setPriceRange, resetFilter } = catalogStore
 onMounted(async () => {
   await fetchProducts()
 
-  const minProductsPrice = Math.min(
+  const minProductsPrice: number = Math.min(
     ...items.value.map(product => +product.price),
   )
-  const maxProductsPrice = Math.max(
+  const maxProductsPrice: number = Math.max(
     ...items.value.map(product => +product.price),
   )
   setPriceRange({
@@ -46,7 +46,7 @@ onMounted(async () => {
         v-if="items.length > 0"
       >
         <n-gi v-for="product in items" :key="product.id">
-          <!-- <CatalogCard v-bind="product" /> -->
+          <CatalogCard v-bind="product" />
         </n-gi>
       </n-grid>
       <n-flex align="center" justify="center" v-else>

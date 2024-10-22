@@ -1,34 +1,28 @@
-<script setup>
-import {computed} from 'vue'
-import {useCartStore} from '@/stores/cart-store/index.js'
+<script setup lang="ts">
+import { computed } from 'vue'
+import type { Ref } from 'vue'
+import { useCartStore } from '../stores/cart-store/index'
+import { NButton, NCard, NEl } from 'naive-ui'
+import { IProduct } from '../typings/interfaces/IProduct'
 
-import {
-  NButton,
-  NCard,
-  NEl
-} from 'naive-ui'
+type TypeCardProps = Omit<IProduct, 'description' | 'category'>
 
-const props = defineProps({
-  id: Number,
-  title: String,
-  image: String,
-  price: Number
-})
+const props = defineProps<TypeCardProps>()
 
 defineOptions({
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const cartStore = useCartStore()
-const {inCart, addToCart, removeFromCart} = cartStore
+const { inCart, addToCart, removeFromCart } = cartStore
 
-const isAddedToCart = computed(() => inCart(props.id))
+const isAddedToCart: Ref<boolean> = computed((): boolean => inCart(props.id))
 
-const addToCartText = computed(() => {
+const addToCartText: Ref<string> = computed(() => {
   return isAddedToCart.value ? 'Убрать из корзины' : 'В корзину'
 })
 
-function onCartButtonClick() {
+function onCartButtonClick(): void {
   if (isAddedToCart.value) {
     removeFromCart(props.id)
   } else {
@@ -37,7 +31,7 @@ function onCartButtonClick() {
       title: props.title,
       image: props.image,
       price: props.price,
-      quantity: 1
+      quantity: 1,
     })
   }
 }
@@ -46,15 +40,19 @@ function onCartButtonClick() {
 <template>
   <n-card :title="title" class="catalog-card" header-class="catalog-card-head">
     <template #cover>
-      <img :src="image" :alt="title" class="catalog-card-image">
+      <img :src="image" :alt="title" class="catalog-card-image" />
     </template>
     <template #footer>
-      <n-el class="catalog-card-price">${{price}}</n-el>
+      <n-el class="catalog-card-price">${{ price }}</n-el>
     </template>
     <template #action>
-      <n-button type="primary"
-                attr-type="button"
-                @click="onCartButtonClick" :ghost="isAddedToCart">{{addToCartText}}</n-button>
+      <n-button
+        type="primary"
+        attr-type="button"
+        @click="onCartButtonClick"
+        :ghost="isAddedToCart"
+        >{{ addToCartText }}</n-button
+      >
     </template>
   </n-card>
 </template>
