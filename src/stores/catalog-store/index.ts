@@ -11,6 +11,7 @@ export const useCatalogStore = defineStore('catalogStore', {
     return {
       items: [],
       categories: [],
+      inProcess: false,
       selectedCategory: {
         label: 'Все категории',
         value: 'all',

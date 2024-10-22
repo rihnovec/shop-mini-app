@@ -9,4 +9,5 @@ export interface ICatalogState {
   selectedCategory: IProductCategory
   catalogTitle: string
   priceRange: TypeRange
+  inProcess: boolean
 }

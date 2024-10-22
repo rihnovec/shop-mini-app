@@ -16,10 +16,11 @@ import {
 import CatalogCard from './CatalogCard.vue'
 
 const catalogStore = useCatalogStore()
-const { items, catalogTitle } = storeToRefs(catalogStore)
+const { items, catalogTitle, inProcess } = storeToRefs(catalogStore)
 const { fetchProducts, setPriceRange, resetFilter } = catalogStore
 
 onMounted(async () => {
+  inProcess.value = true
   await fetchProducts()
 
   const minProductsPrice: number = Math.min(
@@ -32,6 +33,7 @@ onMounted(async () => {
     min: minProductsPrice,
     max: maxProductsPrice,
   })
+  inProcess.value = false
 })
 </script>
 
@@ -49,7 +51,7 @@ onMounted(async () => {
           <CatalogCard v-bind="product" />
         </n-gi>
       </n-grid>
-      <n-flex align="center" justify="center" v-else>
+      <n-flex align="center" justify="center" v-else-if="!inProcess">
         <n-result
           status="info"
           title="Товары не найдены"
