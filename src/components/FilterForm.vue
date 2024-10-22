@@ -6,6 +6,7 @@ import { useCatalogStore } from '@/stores/catalog-store/index.js'
 import {
   NGrid,
   NGi,
+  NForm,
   NLayout,
   NLayoutContent,
   NCard,
@@ -71,79 +72,90 @@ function onChangeFilterPrice() {
   )
 }
 
+function onSubmit() {
+  applyFilter({
+    price: {
+      min: minPriceValue.value,
+      max: maxPriceValue.value,
+    },
+  })
+}
+
 onMounted(() => {
   fetchCategories()
 })
 </script>
 
 <template>
-  <n-layout>
-    <n-layout-content content-style="padding: 24px;">
-      <n-card
-        title="Фильтр"
-        :bordered="false"
-        content-style="padding: 14px 0;"
-        header-style="padding: 0"
-      >
-        <n-space vertical>
-          <n-el class="control-title">Выберите категорию</n-el>
-          <n-select
-            :value="selectedCategory.value"
-            :disabled="!hasOptions"
-            :options="options"
-            @update-value="changeCategory"
-          />
-        </n-space>
-      </n-card>
-      <n-card
-        title="Цена"
-        :bordered="false"
-        content-style="padding: 14px 0;"
-        header-style="padding: 0"
-      >
-        <n-space vertical>
-          <n-grid x-gap="14" :cols="2">
-            <n-gi>
-              <n-space vertical>
-                <n-el class="control-title">Мин. цена $</n-el>
-                <n-input
-                  :value="minPriceValue"
-                  :allow-input="allowInputCheck"
-                  placeholder="Мин. цена"
-                  inputmode="number"
-                  :on-change="onChangeFilterPrice"
-                  :on-update:value="onInputMin"
-                />
-              </n-space>
-            </n-gi>
-            <n-gi>
-              <n-space vertical>
-                <n-el class="control-title">Макс. цена $</n-el>
-                <n-input
-                  :value="maxPriceValue"
-                  :allow-input="allowInputCheck"
-                  placeholder="Макс. цена"
-                  inputmode="number"
-                  :on-change="onChangeFilterPrice"
-                  :on-update:value="onInputMax"
-                />
-              </n-space>
-            </n-gi>
-          </n-grid>
-        </n-space>
-      </n-card>
-      <n-layout-content>
-        <n-space vertical>
-          <n-button strong secondary block @click="resetFilter">
-            Сброс
-          </n-button>
-          <n-button type="primary" block @click="applyFilter">
-            Применить
-          </n-button>
-        </n-space>
+  <n-form @submit.prevent="onSubmit">
+    <n-layout>
+      <n-layout-content content-style="padding: 24px;">
+        <n-card
+          title="Фильтр"
+          :bordered="false"
+          content-style="padding: 14px 0;"
+          header-style="padding: 0"
+        >
+          <n-space vertical>
+            <n-el class="control-title">Выберите категорию</n-el>
+            <n-select
+              :value="selectedCategory.value"
+              :disabled="!hasOptions"
+              :options="options"
+              @update-value="changeCategory"
+            />
+          </n-space>
+        </n-card>
+        <n-card
+          title="Цена"
+          :bordered="false"
+          content-style="padding: 14px 0;"
+          header-style="padding: 0"
+        >
+          <n-space vertical>
+            <n-grid x-gap="14" :cols="2">
+              <n-gi>
+                <n-space vertical>
+                  <n-el class="control-title">Мин. цена $</n-el>
+                  <n-input
+                    :value="minPriceValue"
+                    :allow-input="allowInputCheck"
+                    placeholder="Мин. цена"
+                    inputmode="number"
+                    :on-change="onChangeFilterPrice"
+                    :on-update:value="onInputMin"
+                  />
+                </n-space>
+              </n-gi>
+              <n-gi>
+                <n-space vertical>
+                  <n-el class="control-title">Макс. цена $</n-el>
+                  <n-input
+                    :value="maxPriceValue"
+                    :allow-input="allowInputCheck"
+                    placeholder="Макс. цена"
+                    inputmode="number"
+                    :on-change="onChangeFilterPrice"
+                    :on-update:value="onInputMax"
+                  />
+                </n-space>
+              </n-gi>
+            </n-grid>
+          </n-space>
+        </n-card>
+        <n-layout-content>
+          <n-space vertical>
+            <n-button strong secondary block @click="resetFilter">
+              Сброс
+            </n-button>
+            <n-button type="primary" attr-type="submit" block>
+              Применить
+            </n-button>
+          </n-space>
+        </n-layout-content>
       </n-layout-content>
-    </n-layout-content>
-  </n-layout>
+    </n-layout>
+  </n-form>
 </template>
 
 <style lang="scss" scoped>

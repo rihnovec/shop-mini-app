@@ -15,7 +15,7 @@ export const useCatalogStore = defineStore('catalogStore', () => {
     max: 0,
   })
 
-  function fetchProducts() {
+  function fetchProducts(params = {}) {
     const endpoint =
       selectedCategory.value.value === 'all'
         ? 'https://fakestoreapi.com/products/'
@@ -27,7 +27,15 @@ export const useCatalogStore = defineStore('catalogStore', () => {
       responseType: 'json',
     }).then(response => {
       if (response.status === 200) {
-        items.value = response.data
+        if (params?.price) {
+          items.value = response.data.filter(
+            product =>
+              product.price >= params.price.min &&
+              product.price <= params.price.max,
+          )
+        } else {
+          items.value = response.data
+        }
       }
     })
   }
@@ -54,8 +62,8 @@ export const useCatalogStore = defineStore('catalogStore', () => {
     catalogTitle.value = selectedCategory.value.label
   }
 
-  async function applyFilter() {
-    await fetchProducts()
+  async function applyFilter(params = {}) {
+    await fetchProducts(params)
     catalogTitle.value = selectedCategory.value.label
   }
 
