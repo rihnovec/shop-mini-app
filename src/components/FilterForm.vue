@@ -125,7 +125,7 @@ onMounted(() => {
                 <n-space vertical>
                   <n-el class="control-title">Мин. цена $</n-el>
                   <n-input
-                    :value="minPriceValue"
+                    :value="minPriceValue.toString()"
                     :allow-input="allowInputCheck"
                     placeholder="Мин. цена"
                     inputmode="number"
@@ -138,7 +138,7 @@ onMounted(() => {
                 <n-space vertical>
                   <n-el class="control-title">Макс. цена $</n-el>
                   <n-input
-                    :value="maxPriceValue"
+                    :value="maxPriceValue.toString()"
                     :allow-input="allowInputCheck"
                     placeholder="Макс. цена"
                     inputmode="number"
