@@ -1,12 +1,14 @@
-import {ref, computed} from 'vue'
+import { ref, computed } from 'vue'
 
-export const useValidateInput = (validator) => {
+export const useValidateInput = validator => {
   const isValid = ref(true)
-  const validationStatus = computed(() => isValid.value ? 'success' : 'error')
+  const value = ref('')
+  const validationStatus = computed(() => (isValid.value ? 'success' : 'error'))
 
-  function onInput(value) {
-    isValid.value = validator(value)
+  function onInput(inputValue) {
+    isValid.value = validator(inputValue)
+    value.value = inputValue
   }
 
-  return {isValid, validationStatus, onInput}
+  return { isValid, value, validationStatus, onInput }
 }
