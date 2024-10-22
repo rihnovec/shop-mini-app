@@ -1,21 +1,17 @@
-<script setup>
-import {storeToRefs} from 'pinia'
-import {useAuth} from '@/composables/auth.js'
-import {useCartStore} from '@/stores/cart-store/index.js'
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useAuth } from '../composables/auth'
+import { useCartStore } from '../stores/cart-store/index'
 
-import {
-  NLayout,
-  NLayoutContent
-} from 'naive-ui'
-import Order from '@/components/Order.vue'
-import OrderEmpty from '@/components/OrderEmpty.vue'
+import { NLayout, NLayoutContent } from 'naive-ui'
+import Order from '../components/Order.vue'
+import OrderEmpty from '../components/OrderEmpty.vue'
 
-const {redirectByAuthStatus} = useAuth()
+const { redirectByAuthStatus } = useAuth()
 redirectByAuthStatus()
 
 const cartStore = useCartStore()
-const {quantity} = storeToRefs(cartStore)
-
+const { quantity } = storeToRefs(cartStore)
 </script>
 
 <template>
@@ -27,6 +23,4 @@ const {quantity} = storeToRefs(cartStore)
   </n-layout>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

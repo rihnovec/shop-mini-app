@@ -1,8 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, h } from 'vue'
+import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useCartStore } from '@/stores/cart-store/index.js'
+import { useCartStore } from '../stores/cart-store/index'
 import { useRouter } from 'vue-router'
+
+import { AppRoutes } from '../typings/enums/AppRoutes'
+import { IOrderTabletColumn } from '../typings/interfaces/IOrderTableColumn'
 
 import {
   NH1,
@@ -14,8 +18,8 @@ import {
   NSpace,
   NFlex,
 } from 'naive-ui'
-import OrderProductQuantity from '@/components/OrderProductQuantity.vue'
-import OrderProduct from '@/components/OrderProduct.vue'
+import OrderProductQuantity from '../components/OrderProductQuantity.vue'
+import OrderProduct from '../components/OrderProduct.vue'
 
 const cartStore = useCartStore()
 const { quantity, items } = storeToRefs(cartStore)
@@ -29,13 +33,13 @@ const tableItems = computed(() => {
   }))
 })
 
-const totalSum = computed(() =>
+const totalSum: Ref<string> = computed(() =>
   tableItems.value
     .reduce((sum, product) => sum + product.totalPrice, 0)
     .toFixed(2),
 )
 
-const columns = ref([
+const columns: Ref<IOrderTabletColumn[]> = ref([
   {
     title: '№',
     key: 'index',
@@ -60,18 +64,18 @@ const columns = ref([
   },
 ])
 
-const orderId = ref(12345)
-const orderMessageShown = ref(false)
+const orderId: Ref<number> = ref(12345)
+const orderMessageShown: Ref<boolean> = ref(false)
 const router = useRouter()
 
-function createOrder() {
+function createOrder(): void {
   orderMessageShown.value = true
 }
 
-function closeOrderMessage() {
+function closeOrderMessage(): void {
   orderMessageShown.value = false
   clearCart()
-  router.push({ name: 'home' })
+  router.push({ name: AppRoutes.HOME })
 }
 </script>
 

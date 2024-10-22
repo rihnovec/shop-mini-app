@@ -1,38 +1,28 @@
-<script setup>
-import {useCartStore} from '@/stores/cart-store/index.js'
+<script setup lang="ts">
+import { useCartStore } from '../stores/cart-store/index'
 
-import {
-  NButton,
-  NButtonGroup,
-  NEl
-} from 'naive-ui'
+import { NButton, NButtonGroup, NEl } from 'naive-ui'
 
 const props = defineProps({
   id: Number,
-  quantity: Number
+  quantity: Number,
 })
 
 defineOptions({
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
-const {changeQuantity, removeFromCart} = useCartStore()
+const { changeQuantity, removeFromCart } = useCartStore()
 
-function onIncrementClick() {
-  changeQuantity({
-    productId: props.id,
-    quantity: props.quantity + 1,
-  })
+function onIncrementClick(): void {
+  changeQuantity(props.id, props.quantity + 1)
 }
 
-function onDecrementClick() {
+function onDecrementClick(): void {
   if (props.quantity <= 1) {
     removeFromCart(props.id)
   } else {
-    changeQuantity({
-      productId: props.id,
-      quantity: props.quantity - 1,
-    })
+    changeQuantity(props.id, props.quantity - 1)
   }
 }
 </script>
@@ -40,9 +30,13 @@ function onDecrementClick() {
 <template>
   <div class="order-product-quantity">
     <n-button-group>
-      <n-button ghost round attr-type="button" @click="onDecrementClick">-</n-button>
-      <n-el class="order-product-quantity-value">{{quantity}}</n-el>
-      <n-button ghost round attr-type="button" @click="onIncrementClick">+</n-button>
+      <n-button ghost round attr-type="button" @click="onDecrementClick"
+        >-</n-button
+      >
+      <n-el class="order-product-quantity-value">{{ quantity }}</n-el>
+      <n-button ghost round attr-type="button" @click="onIncrementClick"
+        >+</n-button
+      >
     </n-button-group>
   </div>
 </template>

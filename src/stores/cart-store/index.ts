@@ -26,7 +26,7 @@ export const useCartStore = defineStore('cartStore', {
         product => product.id === productId,
       )
 
-      this.items.filter(product => product.id !== productId)
+      this.items = this.items.filter(product => product.id !== productId)
 
       return targetProduct !== undefined
     },
