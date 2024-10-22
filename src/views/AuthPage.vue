@@ -1,70 +1,25 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../stores/main-store/index'
-import { useAuth } from '../composables/auth.js'
-import { useValidateInput } from '../composables/validate-input.js'
+import { useAuth } from '../composables/auth'
 import md5 from 'crypto-js/md5'
 import { useRouter } from 'vue-router'
 import type { Router } from 'vue-router'
 import { NForm, NFormItem, NInput, NFlex, NButton, NSpace, NH1 } from 'naive-ui'
 
-import { AppRoutes } from '../typings/enums/AppRoutes.js'
-import { IUser } from '../typings/interfaces/IUser.js'
-import { IFormControl } from '../typings/interfaces/IFormControl.js'
+import { AppRoutes } from '../typings/enums/AppRoutes'
+import { useUsers } from '../composables/users'
+import { useAuthFormControls } from '../composables/auth-form-controls'
 
 const { isAuthorized } = storeToRefs(useMainStore())
 
 const router: Router = useRouter()
 const { redirectByAuthStatus } = useAuth()
 
-const users: Ref<IUser[]> = ref([
-  {
-    login: 'frontend@dev.ru',
-    password: 'abe45d28281cfa2a4201c9b90a143095', // 123test
-  },
-])
-
-const controls: IFormControl[] = [
-  {
-    placeholder: 'Введите почту',
-    label: 'Почта',
-    type: 'text',
-    name: 'login',
-    errorMessage: 'Введенное значение не является e-mail',
-    validator: (value: string): boolean =>
-      /^([a-zA-Z0-9_\.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
-        value,
-      ),
-  },
-  {
-    placeholder: 'Введите пароль',
-    label: 'Пароль',
-    type: 'password',
-    name: 'password',
-    errorMessage: 'Длина пароля должна быть не мнее 6 символов',
-    validator: (value: string): boolean => value.length >= 6,
-  },
-].map(control => {
-  const { isValid, value, validationStatus, onInput } = useValidateInput(
-    control.validator,
-  )
-  const feedback: Ref<string> = computed(() =>
-    isValid.value ? '' : control.errorMessage,
-  )
-  const showFeedback: Ref<boolean> = computed(() => !isValid.value)
-
-  return {
-    ...control,
-    isValid,
-    value,
-    validationStatus,
-    feedback,
-    showFeedback,
-    onInput,
-  }
-})
+const { users } = useUsers()
+const { controls } = useAuthFormControls()
 
 const formIsValid: Ref<boolean> = computed(
   () =>
