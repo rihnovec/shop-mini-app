@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '../stores/main-store/index'
@@ -7,13 +7,25 @@ import { useAuth } from '../composables/auth'
 import md5 from 'crypto-js/md5'
 import { useRouter } from 'vue-router'
 import type { Router } from 'vue-router'
-import { NForm, NFormItem, NInput, NFlex, NButton, NSpace, NH1 } from 'naive-ui'
+import {
+  NForm,
+  NFormItem,
+  NInput,
+  NFlex,
+  NButton,
+  NSpace,
+  NH1,
+  NModal,
+  NResult,
+  NCard,
+} from 'naive-ui'
 
 import { AppRoutes } from '../typings/enums/AppRoutes'
 import { useUsers } from '../composables/users'
 import { useAuthFormControls } from '../composables/auth-form-controls'
 
 const { isAuthorized } = storeToRefs(useMainStore())
+const authRejected: Ref<boolean> = ref(false)
 
 const router: Router = useRouter()
 const { redirectByAuthStatus } = useAuth()
@@ -41,7 +53,7 @@ function onSubmit(event: Event): void {
     isAuthorized.value = true
     router.push({ name: AppRoutes.HOME })
   } else {
-    alert('Неверный логин или пароль')
+    authRejected.value = true
   }
 }
 
@@ -99,6 +111,19 @@ function checkAuth(login: string, password: string): boolean {
       </n-space>
     </n-form>
   </n-flex>
+  <n-modal v-model:show="authRejected">
+    <n-card class="error-message-card">
+      <n-result
+        status="error"
+        title="Ошибка"
+        description="Неверный логин или пароль"
+      >
+        <template #footer>
+          <n-button @click="authRejected = false">Закрыть</n-button>
+        </template>
+      </n-result>
+    </n-card>
+  </n-modal>
 </template>
 
 <style lang="scss" scoped>
@@ -119,6 +144,10 @@ function checkAuth(login: string, password: string): boolean {
 
 .auth-form-submit {
   min-width: 160px;
+}
+
+.error-message-card {
+  max-width: 400px;
 }
 
 @media screen and (min-width: 768px) {
