@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useCatalogStore } from '@/stores/catalog-store/index.js'
+import { useCatalogStore } from '../stores/catalog-store/index'
 
 import {
   NLayoutContent,
@@ -16,22 +16,24 @@ import {
 import CatalogCard from './CatalogCard.vue'
 
 const catalogStore = useCatalogStore()
-const { items, catalogTitle } = storeToRefs(catalogStore)
+const { items, catalogTitle, inProcess } = storeToRefs(catalogStore)
 const { fetchProducts, setPriceRange, resetFilter } = catalogStore
 
 onMounted(async () => {
+  inProcess.value = true
   await fetchProducts()
 
-  const minProductsPrice = Math.min(
+  const minProductsPrice: number = Math.min(
     ...items.value.map(product => +product.price),
   )
-  const maxProductsPrice = Math.max(
+  const maxProductsPrice: number = Math.max(
     ...items.value.map(product => +product.price),
   )
   setPriceRange({
     min: minProductsPrice,
     max: maxProductsPrice,
   })
+  inProcess.value = false
 })
 </script>
 
@@ -49,7 +51,7 @@ onMounted(async () => {
           <CatalogCard v-bind="product" />
         </n-gi>
       </n-grid>
-      <n-flex align="center" justify="center" v-else>
+      <n-flex align="center" justify="center" v-else-if="!inProcess">
         <n-result
           status="info"
           title="Товары не найдены"

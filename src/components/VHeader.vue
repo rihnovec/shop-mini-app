@@ -1,12 +1,8 @@
-<script setup>
-  import {
-    NLayoutHeader,
-    NLayoutContent,
-    NFlex
-  } from 'naive-ui'
+<script setup lang="ts">
+import { NLayoutHeader, NLayoutContent, NFlex } from 'naive-ui'
 
-  import HeaderLogo from '@/components/HeaderLogo.vue'
-  import HeaderCart from '@/components/HeaderCart.vue'
+import HeaderLogo from './HeaderLogo.vue'
+import HeaderCart from './HeaderCart.vue'
 </script>
 
 <template>
@@ -20,6 +16,4 @@
   </n-layout-header>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

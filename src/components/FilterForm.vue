@@ -1,7 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useCatalogStore } from '@/stores/catalog-store/index.js'
+import { useCatalogStore } from '../stores/catalog-store/index'
+import { IProductCategory } from '../typings/interfaces/IProductCategory'
+import { TypeCategoryName } from '../typings/types/TypeCategoryName'
 
 import {
   NGrid,
@@ -21,21 +24,23 @@ const catalogStore = useCatalogStore()
 const { categories, selectedCategory, priceRange } = storeToRefs(catalogStore)
 const { fetchCategories, resetFilter, applyFilter } = catalogStore
 
-const minPriceValue = ref(priceRange.value.min)
-const maxPriceValue = ref(priceRange.value.max)
+const minPriceValue: Ref<number> = ref(priceRange.value.min)
+const maxPriceValue: Ref<number> = ref(priceRange.value.max)
 
 watch(priceRange, range => {
   minPriceValue.value = range.min
   maxPriceValue.value = range.max
 })
 
-const options = computed(() => {
-  const categoriesOptions = categories.value.map(category => {
-    return {
-      label: category.slice(0, 1).toUpperCase() + category.slice(1),
-      value: category,
-    }
-  })
+const options: Ref<IProductCategory[]> = computed((): IProductCategory[] => {
+  const categoriesOptions = categories.value.map(
+    (category: TypeCategoryName) => {
+      return {
+        label: category.slice(0, 1).toUpperCase() + category.slice(1),
+        value: category,
+      }
+    },
+  )
 
   return [
     {
@@ -45,25 +50,27 @@ const options = computed(() => {
     ...categoriesOptions,
   ]
 })
-const hasOptions = computed(() => categories.value.length > 0)
+const hasOptions: Ref<boolean> = computed(
+  (): boolean => categories.value.length > 0,
+)
 
-function changeCategory(value, option) {
+function changeCategory(value: string, option: IProductCategory): void {
   selectedCategory.value = option
 }
 
-function allowInputCheck(value) {
+function allowInputCheck(value: string): boolean {
   return value.length === 0 || !Number.isNaN(+value)
 }
 
-function onInputMin(value) {
-  minPriceValue.value = value
+function onInputMin(value: string): void {
+  minPriceValue.value = +value
 }
 
-function onInputMax(value) {
-  maxPriceValue.value = value
+function onInputMax(value: string): void {
+  maxPriceValue.value = +value
 }
 
-function onChangeFilterPrice() {
+function onChangeFilterPrice(): void {
   minPriceValue.value = Math.max(priceRange.value.min, minPriceValue.value)
 
   maxPriceValue.value = Math.max(
@@ -72,7 +79,7 @@ function onChangeFilterPrice() {
   )
 }
 
-function onSubmit() {
+function onSubmit(): void {
   applyFilter({
     price: {
       min: minPriceValue.value,
@@ -118,7 +125,7 @@ onMounted(() => {
                 <n-space vertical>
                   <n-el class="control-title">Мин. цена $</n-el>
                   <n-input
-                    :value="minPriceValue"
+                    :value="minPriceValue.toString()"
                     :allow-input="allowInputCheck"
                     placeholder="Мин. цена"
                     inputmode="number"
@@ -131,7 +138,7 @@ onMounted(() => {
                 <n-space vertical>
                   <n-el class="control-title">Макс. цена $</n-el>
                   <n-input
-                    :value="maxPriceValue"
+                    :value="maxPriceValue.toString()"
                     :allow-input="allowInputCheck"
                     placeholder="Макс. цена"
                     inputmode="number"
