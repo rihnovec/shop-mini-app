@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { Router, RouteComponent } from 'vue-router'
+import type { Router } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
+import { AppRoutes } from '../typings/enums/AppRoutes'
 
 const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: AppRoutes.HOME,
       component: HomePage,
     },
     // {

@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { NLayout, NGrid, NGi } from 'naive-ui'
 // import FilterForm from '../components/FilterForm.vue'
 import Catalog from '../components/Catalog.vue'
-import { useAuth } from '../composables/auth.ts'
+import { useAuth } from '../composables/auth'
 
 const { redirectByAuthStatus } = useAuth()
 redirectByAuthStatus()

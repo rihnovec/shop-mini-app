@@ -1,11 +1,17 @@
 import { ref, computed } from 'vue'
+import type { Ref } from 'vue'
 
-export const useValidateInput = validator => {
-  const isValid = ref(true)
-  const value = ref('')
-  const validationStatus = computed(() => (isValid.value ? 'success' : 'error'))
+type TypeValidatorFunction = (a: string) => boolean
+type TypeValidationStatus = 'success' | 'error'
 
-  function onInput(inputValue) {
+export const useValidateInput = (validator: TypeValidatorFunction) => {
+  const isValid: Ref<boolean> = ref(true)
+  const value: Ref<string> = ref('')
+  const validationStatus: Ref<TypeValidationStatus> = computed(() =>
+    isValid.value ? 'success' : 'error',
+  )
+
+  function onInput(inputValue: string) {
     isValid.value = validator(inputValue)
     value.value = inputValue
   }
