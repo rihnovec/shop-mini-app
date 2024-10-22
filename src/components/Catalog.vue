@@ -3,12 +3,21 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCatalogStore } from '@/stores/catalog-store/index.js'
 
-import { NLayoutContent, NSpace, NGrid, NGi, NH3 } from 'naive-ui'
+import {
+  NLayoutContent,
+  NSpace,
+  NFlex,
+  NGrid,
+  NGi,
+  NH3,
+  NResult,
+  NButton,
+} from 'naive-ui'
 import CatalogCard from './CatalogCard.vue'
 
 const catalogStore = useCatalogStore()
 const { items, catalogTitle } = storeToRefs(catalogStore)
-const { fetchProducts, setPriceRange } = catalogStore
+const { fetchProducts, setPriceRange, resetFilter } = catalogStore
 
 onMounted(async () => {
   await fetchProducts()
@@ -40,6 +49,17 @@ onMounted(async () => {
           <CatalogCard v-bind="product" />
         </n-gi>
       </n-grid>
+      <n-flex align="center" justify="center" v-else>
+        <n-result
+          status="info"
+          title="Товары не найдены"
+          description="Выберите другую категорию или поменяйте параметры фильтра"
+        >
+          <template #footer>
+            <n-button @click="resetFilter">Сбросить фильтр</n-button>
+          </template>
+        </n-result>
+      </n-flex>
     </n-space>
   </n-layout-content>
 </template>
