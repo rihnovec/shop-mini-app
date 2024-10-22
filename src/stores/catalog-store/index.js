@@ -59,6 +59,11 @@ export const useCatalogStore = defineStore('catalogStore', () => {
     }
 
     await fetchProducts()
+
+    priceRange.value = {
+      min: Math.min(...items.value.map(product => product.price)),
+      max: Math.max(...items.value.map(product => product.price)),
+    }
     catalogTitle.value = selectedCategory.value.label
   }
 
