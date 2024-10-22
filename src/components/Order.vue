@@ -1,8 +1,8 @@
 <script setup>
-import {ref, computed, h} from 'vue'
-import {storeToRefs} from 'pinia'
-import {useCartStore} from '@/stores/cart-store/index.js'
-import {useRouter} from 'vue-router'
+import { ref, computed, h } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useCartStore } from '@/stores/cart-store/index.js'
+import { useRouter } from 'vue-router'
 
 import {
   NH1,
@@ -12,47 +12,51 @@ import {
   NModal,
   NCard,
   NSpace,
-  NFlex
+  NFlex,
 } from 'naive-ui'
 import OrderProductQuantity from '@/components/OrderProductQuantity.vue'
 import OrderProduct from '@/components/OrderProduct.vue'
 
 const cartStore = useCartStore()
-const {quantity, items} = storeToRefs(cartStore)
-const {clearCart} = cartStore
+const { quantity, items } = storeToRefs(cartStore)
+const { clearCart } = cartStore
 
 const tableItems = computed(() => {
   return items.value.map((product, index) => ({
     ...product,
     index: index + 1,
-    totalPrice: product.price * product.quantity
+    totalPrice: product.price * product.quantity,
   }))
 })
 
-const totalSum = computed(() => tableItems.value.reduce((sum, product) => sum + product.totalPrice, 0).toFixed(2))
+const totalSum = computed(() =>
+  tableItems.value
+    .reduce((sum, product) => sum + product.totalPrice, 0)
+    .toFixed(2),
+)
 
 const columns = ref([
   {
     title: '№',
-    key: 'index'
+    key: 'index',
   },
   {
     title: 'Наименование товара',
     key: 'title',
-    render: (row) => h(OrderProduct, row)
+    render: row => h(OrderProduct, row),
   },
   {
     title: 'Количество',
     key: 'quantity',
-    render: (row) => h(OrderProductQuantity, row)
+    render: row => h(OrderProductQuantity, row),
   },
   {
     title: 'Цена за ед. $',
-    key: 'price'
+    key: 'price',
   },
   {
     title: 'Итого $',
-    key: 'totalPrice'
+    key: 'totalPrice',
   },
 ])
 
@@ -67,7 +71,7 @@ function createOrder() {
 function closeOrderMessage() {
   orderMessageShown.value = false
   clearCart()
-  router.push({name: 'home'})
+  router.push({ name: 'home' })
 }
 </script>
 
@@ -76,8 +80,12 @@ function closeOrderMessage() {
   <n-space vertical size="large">
     <n-data-table :columns="columns" :data="tableItems" />
     <n-flex align="center" justify="space-between">
-      <n-el class="order-total-text">Всего товаров {{quantity}} на сумму ${{totalSum}}</n-el>
-      <n-button type="primary" attr-type="button" @click="createOrder">Оформить заказ</n-button>
+      <n-el class="order-total-text"
+        >Всего товаров {{ quantity }} на сумму ${{ totalSum }}</n-el
+      >
+      <n-button type="primary" attr-type="button" @click="createOrder"
+        >Оформить заказ</n-button
+      >
     </n-flex>
   </n-space>
   <n-modal v-model:show="orderMessageShown">
@@ -85,10 +93,14 @@ function closeOrderMessage() {
       <n-el class="order-modal-text">Ваш заказ успешно оформлен</n-el>
       <template #footer>
         <n-space justify="center">
-          <n-button ghost type="primary"
-                    class="order-modal-close"
-                    attr-type="button"
-                    @click="closeOrderMessage">Закрыть</n-button>
+          <n-button
+            ghost
+            type="primary"
+            class="order-modal-close"
+            attr-type="button"
+            @click="closeOrderMessage"
+            >Закрыть</n-button
+          >
         </n-space>
       </template>
     </n-card>

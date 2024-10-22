@@ -1,8 +1,7 @@
 import { ref, computed } from 'vue'
 import type { Ref } from 'vue'
-
-type TypeValidatorFunction = (a: string) => boolean
-type TypeValidationStatus = 'success' | 'error'
+import { TypeValidatorFunction } from '../typings/types/TypeValidatorFunction'
+import { TypeValidationStatus } from '../typings/types/TypeValidationStatus'
 
 export const useValidateInput = (validator: TypeValidatorFunction) => {
   const isValid: Ref<boolean> = ref(true)
@@ -11,7 +10,7 @@ export const useValidateInput = (validator: TypeValidatorFunction) => {
     isValid.value ? 'success' : 'error',
   )
 
-  function onInput(inputValue: string) {
+  function onInput(inputValue: string): void {
     isValid.value = validator(inputValue)
     value.value = inputValue
   }
