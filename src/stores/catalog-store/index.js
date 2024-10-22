@@ -1,26 +1,30 @@
-import {ref, computed} from 'vue'
-import {defineStore} from 'pinia'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
 import axios from 'axios'
 
 export const useCatalogStore = defineStore('catalogStore', () => {
   const items = ref([])
   const categories = ref([])
-  const selectedCategoryValue = ref('all')
-  const selectedCategoryTitle = ref('Все категории')
+  const selectedCategory = ref({
+    label: 'Все категории',
+    value: 'all',
+  })
+  const catalogTitle = ref(selectedCategory.value.label)
   const priceRange = ref({
     min: 0,
-    max: 0
+    max: 0,
   })
 
   function fetchProducts() {
-    const endpoint = selectedCategoryValue.value === 'all'
-      ? 'https://fakestoreapi.com/products/'
-      : `https://fakestoreapi.com/products/category/${selectedCategoryValue.value}`
+    const endpoint =
+      selectedCategory.value.value === 'all'
+        ? 'https://fakestoreapi.com/products/'
+        : `https://fakestoreapi.com/products/category/${selectedCategory.value.value}`
 
     return axios({
       url: endpoint,
       method: 'get',
-      responseType: 'json'
+      responseType: 'json',
     }).then(response => {
       if (response.status === 200) {
         items.value = response.data
@@ -32,7 +36,7 @@ export const useCatalogStore = defineStore('catalogStore', () => {
     return axios({
       url: 'https://fakestoreapi.com/products/categories',
       method: 'get',
-      responseType: 'json'
+      responseType: 'json',
     }).then(response => {
       if (response.status === 200) {
         categories.value = response.data
@@ -40,30 +44,35 @@ export const useCatalogStore = defineStore('catalogStore', () => {
     })
   }
 
-  function resetFilter() {
-    selectedCategoryValue.value = 'all'
-    selectedCategoryTitle.value = 'Все категории'
-    fetchProducts()
+  async function resetFilter() {
+    selectedCategory.value = {
+      label: 'Все категории',
+      value: 'all',
+    }
+
+    await fetchProducts()
+    catalogTitle.value = selectedCategory.value.label
   }
 
-  function applyFilter() {
-    fetchProducts()
+  async function applyFilter() {
+    await fetchProducts()
+    catalogTitle.value = selectedCategory.value.label
   }
 
-  function setPriceRange({min, max} = {min: 0, max: 0}) {
-    priceRange.value = {min, max}
+  function setPriceRange({ min, max } = { min: 0, max: 0 }) {
+    priceRange.value = { min, max }
   }
 
   return {
     items,
     categories,
-    selectedCategoryTitle,
-    selectedCategoryValue,
+    selectedCategory,
+    catalogTitle,
     priceRange,
     fetchProducts,
     fetchCategories,
     resetFilter,
     applyFilter,
-    setPriceRange
+    setPriceRange,
   }
 })

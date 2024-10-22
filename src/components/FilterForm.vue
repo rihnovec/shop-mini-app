@@ -17,8 +17,7 @@ import {
 } from 'naive-ui'
 
 const catalogStore = useCatalogStore()
-const { categories, selectedCategoryValue, priceRange } =
-  storeToRefs(catalogStore)
+const { categories, selectedCategory, priceRange } = storeToRefs(catalogStore)
 const { fetchCategories, resetFilter, applyFilter } = catalogStore
 
 const minPriceValue = ref(priceRange.value.min)
@@ -47,8 +46,8 @@ const options = computed(() => {
 })
 const hasOptions = computed(() => categories.value.length > 0)
 
-function changeCategory(value) {
-  selectedCategoryValue.value = value
+function changeCategory(value, option) {
+  selectedCategory.value = option
 }
 
 function allowInputCheck(value) {
@@ -89,7 +88,7 @@ onMounted(() => {
         <n-space vertical>
           <n-el class="control-title">Выберите категорию</n-el>
           <n-select
-            :value="selectedCategoryValue"
+            :value="selectedCategory.value"
             :disabled="!hasOptions"
             :options="options"
             @update-value="changeCategory"
